@@ -1,0 +1,205 @@
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.44 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases
+    -> ;
++--------------------+
+| Database           |
++--------------------+
+| college            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
+| xyz_company        |
++--------------------+
+8 rows in set (0.04 sec)
+
+mysql> create database assign4_set01
+    -> ;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use assign4_set01
+Database changed
+mysql> create table project (project_id int primary key,proj_name varchar(30),chief_arch varchar(30));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> CREATE table employee(emp_id int primary key,emp_name varchar(30));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table assigned_to(project_id int, emp_id int,foreign key(project_id) references project(project_id), foreign key(emp_id) references employee(emp_id));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql>
+mysql> desc assigned_to
+    -> ;
++------------+------+------+-----+---------+-------+
+| Field      | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| project_id | int  | YES  | MUL | NULL    |       |
+| emp_id     | int  | YES  | MUL | NULL    |       |
++------------+------+------+-----+---------+-------+
+2 rows in set (0.03 sec)
+
+mysql> insert into project (project_id, proj_name, chief_arch) values
+    -> (1, 'urban_connect_ai', 'rahul_desai'),
+    -> (2, 'medtrack_pro', 'sneha_patil'),
+    -> (3, 'digital_book_hub', 'amit_kulkarni'),
+    -> (4, 'secure_cloud_guard', 'pooja_shah'),
+    -> (5, 'nextgen_finpay', 'karan_joshi');
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into employee values
+    -> (101, 'arjun_kulkarni'),
+    -> (102, 'meera_sharma'),
+    -> (103, 'rohan_verma'),
+    -> (104, 'kavya_iyer'),
+    -> (105, 'devansh_gupta');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into assigned_to values
+    ->     -> (1, 101),
+    ->     -> (2, 102),
+    ->     -> (3, 103),
+    ->     -> (4, 104),
+    ->     -> (5, 105);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-> (1, 101),
+    -> (2, 102),
+    -> (3, 103),
+    -> (4, 104),
+    -> (5, 105)' at line 2
+mysql> insert into assigned_to values
+    ->     (1, 101),
+    ->      (2, 102),
+    ->      (3, 103),
+    ->     (4, 104),
+    ->    (5, 105);
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> JOIN Project p ON a.project_id = p.project_id;
++----------------+--------------------+
+| emp_name       | proj_name          |
++----------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   |
+| meera_sharma   | medtrack_pro       |
+| rohan_verma    | digital_book_hub   |
+| kavya_iyer     | secure_cloud_guard |
+| devansh_gupta  | nextgen_finpay     |
++----------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*) AS total_employees
+    -> FROM Assigned_To
+    -> WHERE project_id = 'C353';
++-----------------+
+| total_employees |
++-----------------+
+|               0 |
++-----------------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> LEFT JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> LEFT JOIN Project p ON a.project_id = p.project_id;
++----------------+--------------------+
+| emp_name       | proj_name          |
++----------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   |
+| meera_sharma   | medtrack_pro       |
+| rohan_verma    | digital_book_hub   |
+| kavya_iyer     | secure_cloud_guard |
+| devansh_gupta  | nextgen_finpay     |
++----------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT p.proj_name, e.emp_name
+    -> FROM Project p
+    -> LEFT JOIN Assigned_To a ON p.project_id = a.project_id
+    -> LEFT JOIN Employee e ON a.emp_id = e.emp_id;
++--------------------+----------------+
+| proj_name          | emp_name       |
++--------------------+----------------+
+| urban_connect_ai   | arjun_kulkarni |
+| medtrack_pro       | meera_sharma   |
+| digital_book_hub   | rohan_verma    |
+| secure_cloud_guard | kavya_iyer     |
+| nextgen_finpay     | devansh_gupta  |
++--------------------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> FULL OUTER JOIN Project p ON a.project_id = p.project_id;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+FULL OUTER JOIN Project p O' at line 3
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> FULL OUTER JOIN Project p ON a.project_id = p.project_id;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+FULL OUTER JOIN Project p O' at line 3
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> FULL OUTER JOIN assigned_to a ON e.emp_id = a.emp_id
+    -> FULL OUTER JOIN Project p ON a.project_id = p.project_id;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FULL OUTER JOIN assigned_to a ON e.emp_id = a.emp_id
+FULL OUTER JOIN Project p ' at line 3
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> LEFT JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> LEFT JOIN Project p ON a.project_id = p.project_id
+    ->
+    -> UNION
+    ->
+    -> SELECT e.emp_name, p.proj_name
+    -> FROM Project p
+    -> LEFT JOIN Assigned_To a ON p.project_id = a.project_id
+    -> LEFT JOIN Employee e ON a.emp_id = e.emp_id;
++----------------+--------------------+
+| emp_name       | proj_name          |
++----------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   |
+| meera_sharma   | medtrack_pro       |
+| rohan_verma    | digital_book_hub   |
+| kavya_iyer     | secure_cloud_guard |
+| devansh_gupta  | nextgen_finpay     |
++----------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT
+    ->     e.emp_name,
+    ->     p.proj_name,
+    ->     IF(e.emp_id = p.chief_arch, 'Yes', 'No') AS is_chief_architect
+    -> FROM Employee e
+    -> JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> JOIN Project p ON a.project_id = p.project_id;
++----------------+--------------------+--------------------+
+| emp_name       | proj_name          | is_chief_architect |
++----------------+--------------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   | No                 |
+| meera_sharma   | medtrack_pro       | No                 |
+| rohan_verma    | digital_book_hub   | No                 |
+| kavya_iyer     | secure_cloud_guard | No                 |
+| devansh_gupta  | nextgen_finpay     | No                 |
++----------------+--------------------+--------------------+
+5 rows in set, 5 warnings (0.00 sec)
