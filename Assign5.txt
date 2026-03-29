@@ -1,0 +1,346 @@
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.44 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database assign5
+    -> ;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use assign5;
+Database changed
+mysql> create table members (
+    ->     member_id int primary key,
+    ->     first_name varchar(50),
+    ->     last_name varchar(50),
+    ->     email varchar(100),
+    ->     join_date date
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table books (
+    ->     book_id int primary key,
+    ->     title varchar(100),
+    ->     author varchar(100),
+    ->     genre varchar(50),
+    ->     publish_year int
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table employees (
+    ->     employee_id int primary key,
+    ->     first_name varchar(50),
+    ->     last_name varchar(50),
+    ->     hire_date date,
+    ->     position varchar(50)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table borrowings (
+    ->     borrowing_id int primary key,
+    ->     member_id int,
+    ->     book_id int,
+    ->     borrow_date date,
+    ->     return_date date,
+    ->     foreign key (member_id) references members(member_id),
+    ->     foreign key (book_id) references books(book_id)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_assign5 |
++-------------------+
+| books             |
+| borrowings        |
+| employees         |
+| members           |
++-------------------+
+4 rows in set (0.08 sec)
+
+mysql> insert into members values
+    -> (1, 'rahul', 'patil', 'rahul@gmail.com', '2024-01-10'),
+    -> (2, 'sneha', 'joshi', 'sneha@gmail.com', '2023-06-15'),
+    -> (3, 'amit', 'desai', 'amit@gmail.com', '2022-08-20'),
+    -> (4, 'priya', 'nair', 'priya@gmail.com', '2024-03-05'),
+    -> (5, 'karan', 'malhotra', 'karan@gmail.com', '2021-11-25');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into books values
+    -> (1, 'dbms basics', 'navathe', 'education', 2018),
+    -> (2, 'ai revolution', 'john doe', 'technology', 2021),
+    -> (3, 'data science', 'jane smith', 'technology', 2020),
+    -> (4, 'history of india', 'ram gupta', 'history', 2015),
+    -> (5, 'finance 101', 'kapoor', 'finance', 2019);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into employees values
+    -> (101, 'arjun', 'kulkarni', '2010-05-10', 'manager'),
+    -> (102, 'meera', 'sharma', '2015-07-20', 'librarian'),
+    -> (103, 'rohan', 'verma', '2012-09-15', 'assistant'),
+    -> (104, 'kavya', 'iyer', '2008-03-12', 'admin'),
+    -> (105, 'devansh', 'gupta', '2020-01-01', 'staff');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into borrowings values
+    -> (1, 1, 1, '2024-02-01', '2024-02-10'),
+    -> (2, 1, 2, '2024-02-15', '2024-02-25'),
+    -> (3, 2, 3, '2023-07-01', '2023-07-10'),
+    -> (4, 3, 4, '2023-08-05', '2023-08-20'),
+    -> (5, 4, 2, '2024-03-10', '2024-03-15'),
+    -> (6, 1, 3, '2024-03-20', '2024-03-28'),
+    -> (7, 2, 1, '2023-08-01', '2023-08-12');
+Query OK, 7 rows affected (0.02 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> select * from borrowings;
++--------------+-----------+---------+-------------+-------------+
+| borrowing_id | member_id | book_id | borrow_date | return_date |
++--------------+-----------+---------+-------------+-------------+
+|            1 |         1 |       1 | 2024-02-01  | 2024-02-10  |
+|            2 |         1 |       2 | 2024-02-15  | 2024-02-25  |
+|            3 |         2 |       3 | 2023-07-01  | 2023-07-10  |
+|            4 |         3 |       4 | 2023-08-05  | 2023-08-20  |
+|            5 |         4 |       2 | 2024-03-10  | 2024-03-15  |
+|            6 |         1 |       3 | 2024-03-20  | 2024-03-28  |
+|            7 |         2 |       1 | 2023-08-01  | 2023-08-12  |
++--------------+-----------+---------+-------------+-------------+
+7 rows in set (0.00 sec)
+
+mysql> select * from employees;
++-------------+------------+-----------+------------+-----------+
+| employee_id | first_name | last_name | hire_date  | position  |
++-------------+------------+-----------+------------+-----------+
+|         101 | arjun      | kulkarni  | 2010-05-10 | manager   |
+|         102 | meera      | sharma    | 2015-07-20 | librarian |
+|         103 | rohan      | verma     | 2012-09-15 | assistant |
+|         104 | kavya      | iyer      | 2008-03-12 | admin     |
+|         105 | devansh    | gupta     | 2020-01-01 | staff     |
++-------------+------------+-----------+------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> 1st part
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1st part' at line 1
+mysql>
+mysql>
+mysql>
+mysql>
+mysql> create view report_last_year as
+    -> select
+    -> concat(upper(first_name),' ',last_name) as full_name,
+    -> length(email) as email_length,
+    -> datediff(curdate(), join_date) as no_of_days
+    -> from members
+    -> where join_date >= curdate() - interval 1 year
+    -> order by join_date desc;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create view genre_popularity as
+    -> select
+    -> b.genre,
+    -> count(*) as no_of_books_borrowed,
+    -> avg(datediff(return_date,borrow_date)) as avg_borrow_duration,
+    -> count(distinct br.member_id) as unique_members
+    -> from borrowings br
+    -> join books b on br.book_id = b.book_id
+    -> group by b.genre
+    -> having count(*) > 500;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from report_last_year;
+Empty set (0.01 sec)
+
+mysql> select * from genre_popularity;
+Empty set (0.02 sec)
+
+mysql> --2nd question over
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--2nd question over' at line 1
+mysql> create view top_employees as
+    -> select distinct
+    -> concat(e.first_name,' ',e.last_name) as full_name,
+    -> e.position
+    -> from employees e
+    -> join borrowings br on e.employee_id = br.borrowing_id
+    -> where br.member_id in (
+    ->     select member_id
+    ->     from borrowings
+    ->     group by member_id
+    ->     having count(*) > (
+    ->         select avg(cnt)
+    ->         from (
+    ->             select count(*) as cnt
+    ->             from borrowings
+    ->             group by member_id
+    ->         ) as temp
+    ->     )
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create view top_employees as
+    -> select distinct
+    -> concat(e.first_name,' ',e.last_name) as full_name,
+    -> e.position
+    -> from employees e
+    -> join borrowings br on e.employee_id = br.borrowing_id
+    -> where br.member_id in (
+    ->     select member_id
+    ->     from borrowings
+    ->     group by member_id
+    ->     having count(*) > (
+    ->         select avg(cnt)
+    ->         from (
+    ->             select count(*) as cnt
+    ->             from borrowings
+    ->             group by member_id
+    ->         ) as temp
+    ->     )
+    -> )
+    -> //
+    -> sdsasdsd;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '//
+sdsasdsd' at line 20
+mysql> select * from top_employees;
+Empty set (0.02 sec)
+
+mysql> --4th question
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--4th question' at line 1
+mysql>
+mysql>
+mysql>
+mysql> select first_name, last_name
+    -> from members m
+    -> join borrowings b
+    -> on m.member_id = b.member_id
+    -> where b.return_date is null
+    -> and b.borrow_date < curdate()
+    ->
+    -> union
+    ->
+    -> select first_name, last_name
+    -> from employees
+    -> where hire_date <= date_sub(curdate(), interval 10 year);
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| arjun      | kulkarni  |
+| meera      | sharma    |
+| rohan      | verma     |
+| kavya      | iyer      |
++------------+-----------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql>
+mysql> --5th question;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--5th question' at line 1
+mysql> create view v_top_borrowers as
+    -> select
+    -> concat(m.first_name, ' ', m.last_name) as full_name,
+    -> m.email,
+    -> count(b.borrowing_id) as total_books_borrowed
+    -> from members m
+    -> join borrowings b
+    -> on m.member_id = b.member_id
+    -> group by m.member_id, m.first_name, m.last_name, m.email
+    -> order by total_books_borrowed desc
+    -> limit 15;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from v_top_borrowers;
++-------------+-----------------+----------------------+
+| full_name   | email           | total_books_borrowed |
++-------------+-----------------+----------------------+
+| rahul patil | rahul@gmail.com |                    3 |
+| sneha joshi | sneha@gmail.com |                    2 |
+| amit desai  | amit@gmail.com  |                    1 |
+| priya nair  | priya@gmail.com |                    1 |
++-------------+-----------------+----------------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql>
+mysql> -6th question
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-6th question' at line 1
+mysql>
+mysql>
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update members
+    -> set member_id = 901
+    -> where member_id = 555;
+Query OK, 0 rows affected (0.01 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> savepoint after_first_update;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+mysql> update members
+    -> set member_id = 902
+    -> where member_id = 556;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> -- mistake
+mysql> update members
+    -> set member_id = 901
+    -> where member_id = 557;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> select * from members;
++-----------+------------+-----------+-----------------+------------+
+| member_id | first_name | last_name | email           | join_date  |
++-----------+------------+-----------+-----------------+------------+
+|         1 | rahul      | patil     | rahul@gmail.com | 2024-01-10 |
+|         2 | sneha      | joshi     | sneha@gmail.com | 2023-06-15 |
+|         3 | amit       | desai     | amit@gmail.com  | 2022-08-20 |
+|         4 | priya      | nair      | priya@gmail.com | 2024-03-05 |
+|         5 | karan      | malhotra  | karan@gmail.com | 2021-11-25 |
++-----------+------------+-----------+-----------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> rollback to after_first_update;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> rollback to after_first_update;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update members
+    -> set member_id = 903
+    -> where member_id = 557;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from members;
++-----------+------------+-----------+-----------------+------------+
+| member_id | first_name | last_name | email           | join_date  |
++-----------+------------+-----------+-----------------+------------+
+|         1 | rahul      | patil     | rahul@gmail.com | 2024-01-10 |
+|         2 | sneha      | joshi     | sneha@gmail.com | 2023-06-15 |
+|         3 | amit       | desai     | amit@gmail.com  | 2022-08-20 |
+|         4 | priya      | nair      | priya@gmail.com | 2024-03-05 |
+|         5 | karan      | malhotra  | karan@gmail.com | 2021-11-25 |
++-----------+------------+-----------+-----------------+------------+
+5 rows in set (0.00 sec)
+
+mysql>

@@ -1,0 +1,199 @@
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.44 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database football_db;
+Query OK, 1 row affected (0.04 sec)
+
+mysql> use football_db
+Database changed
+mysql> create table team (
+    ->     team_id int primary key,
+    ->     team_name varchar(50),
+    ->     home_city varchar(50)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table player (
+    ->     player_id int primary key,
+    ->     player_name varchar(50),
+    ->     role varchar(30),
+    ->     team_id int,
+    ->     foreign key (team_id) references team(team_id)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table matchs (
+    ->     match_id int primary key,
+    ->     match_date date,
+    ->     venue varchar(50)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table match_team (
+    ->     match_id int,
+    ->     team_id int,
+    ->     score int,
+    ->     primary key (match_id, team_id),
+    ->     foreign key (match_id) references matchs(match_id),
+    ->     foreign key (team_id) references team(team_id)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> create table player_match_stats (
+    ->     player_id int,
+    ->     match_id int,
+    ->     goals_scored int,
+    ->     assists int,
+    ->     fouls int,
+    ->     minutes_played int,
+    ->     primary key (player_id, match_id),
+    ->     foreign key (player_id) references player(player_id),
+    ->     foreign key (match_id) references matchs(match_id)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> desc team;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| team_id   | int         | NO   | PRI | NULL    |       |
+| team_name | varchar(50) | YES  |     | NULL    |       |
+| home_city | varchar(50) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+
+mysql> desc matchs;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| match_id   | int         | NO   | PRI | NULL    |       |
+| match_date | date        | YES  |     | NULL    |       |
+| venue      | varchar(50) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc player;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| player_id   | int         | NO   | PRI | NULL    |       |
+| player_name | varchar(50) | YES  |     | NULL    |       |
+| role        | varchar(30) | YES  |     | NULL    |       |
+| team_id     | int         | YES  | MUL | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc match_team;
++----------+------+------+-----+---------+-------+
+| Field    | Type | Null | Key | Default | Extra |
++----------+------+------+-----+---------+-------+
+| match_id | int  | NO   | PRI | NULL    |       |
+| team_id  | int  | NO   | PRI | NULL    |       |
+| score    | int  | YES  |     | NULL    |       |
++----------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into team values
+    -> (1, 'mumbai warriors', 'mumbai'),
+    -> (2, 'pune strikers', 'pune'),
+    -> (3, 'delhi dynamos', 'delhi');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into player values
+    -> (101, 'rohit', 'forward', 1),
+    -> (102, 'amit', 'midfielder', 1),
+    -> (103, 'suresh', 'defender', 2),
+    -> (104, 'vikas', 'goalkeeper', 2),
+    -> (105, 'rahul', 'forward', 3);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into matchs values
+    -> (201, '2026-03-01', 'mumbai stadium'),
+    -> (202, '2026-03-05', 'pune ground');
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into match_team values
+    -> (201, 1, 2),
+    -> (201, 2, 1),
+    -> (202, 2, 3),
+    -> (202, 3, 2);
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into player_match_stats values
+    -> (101, 201, 1, 0, 1, 90),
+    -> (102, 201, 0, 1, 0, 85),
+    -> (103, 201, 0, 0, 2, 90),
+    -> (104, 202, 0, 0, 0, 90),
+    -> (105, 202, 2, 1, 1, 90);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from team;
++---------+-----------------+-----------+
+| team_id | team_name       | home_city |
++---------+-----------------+-----------+
+|       1 | mumbai warriors | mumbai    |
+|       2 | pune strikers   | pune      |
+|       3 | delhi dynamos   | delhi     |
++---------+-----------------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from player;
++-----------+-------------+------------+---------+
+| player_id | player_name | role       | team_id |
++-----------+-------------+------------+---------+
+|       101 | rohit       | forward    |       1 |
+|       102 | amit        | midfielder |       1 |
+|       103 | suresh      | defender   |       2 |
+|       104 | vikas       | goalkeeper |       2 |
+|       105 | rahul       | forward    |       3 |
++-----------+-------------+------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select * from matchs;
++----------+------------+----------------+
+| match_id | match_date | venue          |
++----------+------------+----------------+
+|      201 | 2026-03-01 | mumbai stadium |
+|      202 | 2026-03-05 | pune ground    |
++----------+------------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from match_team;
++----------+---------+-------+
+| match_id | team_id | score |
++----------+---------+-------+
+|      201 |       1 |     2 |
+|      201 |       2 |     1 |
+|      202 |       2 |     3 |
+|      202 |       3 |     2 |
++----------+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from player_match_stats;
++-----------+----------+--------------+---------+-------+----------------+
+| player_id | match_id | goals_scored | assists | fouls | minutes_played |
++-----------+----------+--------------+---------+-------+----------------+
+|       101 |      201 |            1 |       0 |     1 |             90 |
+|       102 |      201 |            0 |       1 |     0 |             85 |
+|       103 |      201 |            0 |       0 |     2 |             90 |
+|       104 |      202 |            0 |       0 |     0 |             90 |
+|       105 |      202 |            2 |       1 |     1 |             90 |
++-----------+----------+--------------+---------+-------+----------------+
+5 rows in set (0.00 sec)
+
+mysql>

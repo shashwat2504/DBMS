@@ -1,0 +1,390 @@
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.44 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases
+    -> ;
++--------------------+
+| Database           |
++--------------------+
+| college            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
+| xyz_company        |
++--------------------+
+8 rows in set (0.04 sec)
+
+mysql> create database assign4_set01
+    -> ;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use assign4_set01
+Database changed
+mysql> create table project (project_id int primary key,proj_name varchar(30),chief_arch varchar(30));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> CREATE table employee(emp_id int primary key,emp_name varchar(30));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table assigned_to(project_id int, emp_id int,foreign key(project_id) references project(project_id), foreign key(emp_id) references employee(emp_id));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql>
+mysql> desc assigned_to
+    -> ;
++------------+------+------+-----+---------+-------+
+| Field      | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| project_id | int  | YES  | MUL | NULL    |       |
+| emp_id     | int  | YES  | MUL | NULL    |       |
++------------+------+------+-----+---------+-------+
+2 rows in set (0.03 sec)
+
+mysql> insert into project (project_id, proj_name, chief_arch) values
+    -> (1, 'urban_connect_ai', 'rahul_desai'),
+    -> (2, 'medtrack_pro', 'sneha_patil'),
+    -> (3, 'digital_book_hub', 'amit_kulkarni'),
+    -> (4, 'secure_cloud_guard', 'pooja_shah'),
+    -> (5, 'nextgen_finpay', 'karan_joshi');
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into employee values
+    -> (101, 'arjun_kulkarni'),
+    -> (102, 'meera_sharma'),
+    -> (103, 'rohan_verma'),
+    -> (104, 'kavya_iyer'),
+    -> (105, 'devansh_gupta');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into assigned_to values
+    ->     -> (1, 101),
+    ->     -> (2, 102),
+    ->     -> (3, 103),
+    ->     -> (4, 104),
+    ->     -> (5, 105);
+ERROR 1064 (42000): You have an error in your SQL syntax; checkthe manual that corresponds to your MySQL server version for the right syntax to use near '-> (1, 101),
+    -> (2, 102),
+    -> (3, 103),
+    -> (4, 104),
+    -> (5, 105)' at line 2
+mysql> insert into assigned_to values
+    ->     (1, 101),
+    ->      (2, 102),
+    ->      (3, 103),
+    ->     (4, 104),
+    ->    (5, 105);
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> JOIN Project p ON a.project_id = p.project_id;
++----------------+--------------------+
+| emp_name       | proj_name          |
++----------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   |
+| meera_sharma   | medtrack_pro       |
+| rohan_verma    | digital_book_hub   |
+| kavya_iyer     | secure_cloud_guard |
+| devansh_gupta  | nextgen_finpay     |
++----------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*) AS total_employees
+    -> FROM Assigned_To
+    -> WHERE project_id = 'C353';
++-----------------+
+| total_employees |
++-----------------+
+|               0 |
++-----------------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> LEFT JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> LEFT JOIN Project p ON a.project_id = p.project_id;
++----------------+--------------------+
+| emp_name       | proj_name          |
++----------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   |
+| meera_sharma   | medtrack_pro       |
+| rohan_verma    | digital_book_hub   |
+| kavya_iyer     | secure_cloud_guard |
+| devansh_gupta  | nextgen_finpay     |
++----------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT p.proj_name, e.emp_name
+    -> FROM Project p
+    -> LEFT JOIN Assigned_To a ON p.project_id = a.project_id
+    -> LEFT JOIN Employee e ON a.emp_id = e.emp_id;
++--------------------+----------------+
+| proj_name          | emp_name       |
++--------------------+----------------+
+| urban_connect_ai   | arjun_kulkarni |
+| medtrack_pro       | meera_sharma   |
+| digital_book_hub   | rohan_verma    |
+| secure_cloud_guard | kavya_iyer     |
+| nextgen_finpay     | devansh_gupta  |
++--------------------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> FULL OUTER JOIN Project p ON a.project_id = p.project_id;
+ERROR 1064 (42000): You have an error in your SQL syntax; checkthe manual that corresponds to your MySQL server version for the right syntax to use near 'FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+FULL OUTER JOIN Project p O' at line 3
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> FULL OUTER JOIN Project p ON a.project_id = p.project_id;
+ERROR 1064 (42000): You have an error in your SQL syntax; checkthe manual that corresponds to your MySQL server version for the right syntax to use near 'FULL OUTER JOIN Assigned_To a ON e.emp_id = a.emp_id
+FULL OUTER JOIN Project p O' at line 3
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> FULL OUTER JOIN assigned_to a ON e.emp_id = a.emp_id
+    -> FULL OUTER JOIN Project p ON a.project_id = p.project_id;
+ERROR 1064 (42000): You have an error in your SQL syntax; checkthe manual that corresponds to your MySQL server version for the right syntax to use near 'FULL OUTER JOIN assigned_to a ON e.emp_id = a.emp_id
+FULL OUTER JOIN Project p ' at line 3
+mysql> SELECT e.emp_name, p.proj_name
+    -> FROM Employee e
+    -> LEFT JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> LEFT JOIN Project p ON a.project_id = p.project_id
+    ->
+    -> UNION
+    ->
+    -> SELECT e.emp_name, p.proj_name
+    -> FROM Project p
+    -> LEFT JOIN Assigned_To a ON p.project_id = a.project_id
+    -> LEFT JOIN Employee e ON a.emp_id = e.emp_id;
++----------------+--------------------+
+| emp_name       | proj_name          |
++----------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   |
+| meera_sharma   | medtrack_pro       |
+| rohan_verma    | digital_book_hub   |
+| kavya_iyer     | secure_cloud_guard |
+| devansh_gupta  | nextgen_finpay     |
++----------------+--------------------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT
+    ->     e.emp_name,
+    ->     p.proj_name,
+    ->     IF(e.emp_id = p.chief_arch, 'Yes', 'No') AS is_chief_architect
+    -> FROM Employee e
+    -> JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> JOIN Project p ON a.project_id = p.project_id;
++----------------+--------------------+--------------------+
+| emp_name       | proj_name          | is_chief_architect |
++----------------+--------------------+--------------------+
+| arjun_kulkarni | urban_connect_ai   | No                 |
+| meera_sharma   | medtrack_pro       | No                 |
+| rohan_verma    | digital_book_hub   | No                 |
+| kavya_iyer     | secure_cloud_guard | No                 |
+| devansh_gupta  | nextgen_finpay     | No                 |
++----------------+--------------------+--------------------+
+5 rows in set, 5 warnings (0.00 sec)
+
+mysql> create database assign4_set02
+    -> ;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use assign4_set02
+Database changed
+mysql> create table customer (
+    ->     cust_id int primary key,
+    ->     cust_name varchar(50),
+    ->     annual_revenue decimal(10,2),
+    ->     cust_type varchar(20),
+    ->     check (cust_type in ('manufacturer','wholesaler','retailer'))
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> create table truck (
+    ->     truck_no int primary key,
+    ->     driver_name varchar(50)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table city (
+    ->     city_name varchar(50) primary key,
+    ->     population int
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table shipment (
+    ->     shipment_no int primary key,
+    ->     cust_id int,
+    ->     weight int,
+    ->     truck_no int,
+    ->     destination varchar(50),
+    ->     ship_date date,
+    ->     foreign key (cust_id) references customer(cust_id),
+    ->     foreign key (truck_no) references truck(truck_no),
+    ->     foreign key (destination) references city(city_name)
+    -> );
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> insert into customer values
+    -> (1,'alpha industries',750000,'manufacturer'),
+    -> (2,'beta distributors',500000,'wholesaler'),
+    -> (3,'gamma stores',200000,'retailer'),
+    -> (4,'delta corp',900000,'manufacturer'),
+    -> (5,'epsilon traders',300000,'wholesaler');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into truck values
+    -> (101,'ravi kumar'),
+    -> (102,'amit shah'),
+    -> (103,'john doe'),
+    -> (104,'suresh patil'),
+    -> (105,'michael lee');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> insert into city values
+    -> ('mumbai',20000000),
+    -> ('pune',8000000),
+    -> ('delhi',25000000),
+    -> ('bangalore',12000000),
+    -> ('chennai',11000000),
+    -> ('kolkata',14000000);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> insert into shipment values
+    -> (1,1,120,101,'mumbai','2024-01-10'),
+    -> (2,2,1500,102,'pune','2024-01-12'),
+    -> (3,3,80,103,'delhi','2024-01-15'),
+    -> (4,4,2000,101,'bangalore','2024-01-18'),
+    -> (5,5,300,104,'chennai','2024-01-20'),
+    -> (6,1,50,102,'kolkata','2024-01-22'),
+    -> (7,2,1100,103,'mumbai','2024-01-25');
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> select distinct t.driver_name
+    -> from truck t
+    -> join shipment s on t.truck_no = s.truck_no
+    -> where s.weight > 100;
++--------------+
+| driver_name  |
++--------------+
+| ravi kumar   |
+| amit shah    |
+| suresh patil |
+| john doe     |
++--------------+
+4 rows in set (0.01 sec)
+
+mysql> select
+    ->     s.shipment_no,
+    ->     c.cust_name,
+    ->     t.driver_name,
+    ->     s.destination
+    -> from shipment s
+    -> join customer c on s.cust_id = c.cust_id
+    -> join truck t on s.truck_no = t.truck_no
+    -> where s.weight > 1000;
++-------------+-------------------+-------------+-------------+
+| shipment_no | cust_name         | driver_name | destination |
++-------------+-------------------+-------------+-------------+
+|           2 | beta distributors | amit shah   | pune        |
+|           4 | delta corp        | ravi kumar  | bangalore   |
+|           7 | beta distributors | john doe    | mumbai      |
++-------------+-------------------+-------------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> select
+    ->     t.truck_no,
+    ->     t.driver_name,
+    ->     c.cust_name,
+    ->     s.destination
+    -> from truck t
+    -> left join shipment s on t.truck_no = s.truck_no
+    -> left join customer c on s.cust_id = c.cust_id;
++----------+--------------+-------------------+-------------+
+| truck_no | driver_name  | cust_name         | destination |
++----------+--------------+-------------------+-------------+
+|      101 | ravi kumar   | alpha industries  | mumbai      |
+|      101 | ravi kumar   | delta corp        | bangalore   |
+|      102 | amit shah    | beta distributors | pune        |
+|      102 | amit shah    | alpha industries  | kolkata     |
+|      103 | john doe     | gamma stores      | delhi       |
+|      103 | john doe     | beta distributors | mumbai      |
+|      104 | suresh patil | epsilon traders   | chennai     |
+|      105 | michael lee  | NULL              | NULL        |
++----------+--------------+-------------------+-------------+
+8 rows in set (0.00 sec)
+
+mysql> select
+    ->     t.truck_no,
+    ->     t.driver_name,
+    ->     c.cust_name,
+    ->     s.destination
+    -> from truck t
+    -> left join shipment s on t.truck_no = s.truck_no
+    -> left join customer c on s.cust_id = c.cust_id;
++----------+--------------+-------------------+-------------+
+| truck_no | driver_name  | cust_name         | destination |
++----------+--------------+-------------------+-------------+
+|      101 | ravi kumar   | alpha industries  | mumbai      |
+|      101 | ravi kumar   | delta corp        | bangalore   |
+|      102 | amit shah    | beta distributors | pune        |
+|      102 | amit shah    | alpha industries  | kolkata     |
+|      103 | john doe     | gamma stores      | delhi       |
+|      103 | john doe     | beta distributors | mumbai      |
+|      104 | suresh patil | epsilon traders   | chennai     |
+|      105 | michael lee  | NULL              | NULL        |
++----------+--------------+-------------------+-------------+
+8 rows in set (0.00 sec)
+
+mysql> select
+    ->     s.shipment_no,
+    ->     s.destination,
+    ->     c.city_name
+    -> from shipment s
+    -> left join city c on s.destination = c.city_name
+    ->
+    -> union
+    ->
+    -> select
+    ->     s.shipment_no,
+    ->     s.destination,
+    ->     c.city_name
+    -> from shipment s
+    -> right join city c on s.destination = c.city_name;
++-------------+-------------+-----------+
+| shipment_no | destination | city_name |
++-------------+-------------+-----------+
+|           4 | bangalore   | bangalore |
+|           5 | chennai     | chennai   |
+|           3 | delhi       | delhi     |
+|           6 | kolkata     | kolkata   |
+|           1 | mumbai      | mumbai    |
+|           7 | mumbai      | mumbai    |
+|           2 | pune        | pune      |
++-------------+-------------+-----------+
+7 rows in set (0.01 sec)
+
+mysql>

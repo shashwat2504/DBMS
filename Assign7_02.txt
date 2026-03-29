@@ -1,0 +1,101 @@
+
+mysql> use assign07_02
+Database changed
+mysql> create table orders(
+    ->     order_id int primary key,
+    ->     customer_id int,
+    ->     order_status varchar(20),
+    ->     total_amount int
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into orders values
+    -> (1,101,'completed',500),
+    -> (2,102,'completed',700),
+    -> (3,101,'not completed',300),
+    -> (4,103,'completed',900),
+    -> (5,104,'not completed',450),
+    -> (6,102,'completed',650),
+    -> (7,105,'completed',800),
+    -> (8,101,'completed',550),
+    -> (9,103,'not completed',200),
+    -> (10,104,'completed',750);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> delimiter //
+mysql> desc orders;
+    -> //
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| order_id     | int         | NO   | PRI | NULL    |       |
+| customer_id  | int         | YES  |     | NULL    |       |
+| order_status | varchar(20) | YES  |     | NULL    |       |
+| total_amount | int         | YES  |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from orders;
+    -> //
++----------+-------------+---------------+--------------+
+| order_id | customer_id | order_status  | total_amount |
++----------+-------------+---------------+--------------+
+|        1 |         101 | completed     |          500 |
+|        2 |         102 | completed     |          700 |
+|        3 |         101 | not completed |          300 |
+|        4 |         103 | completed     |          900 |
+|        5 |         104 | not completed |          450 |
+|        6 |         102 | completed     |          650 |
+|        7 |         105 | completed     |          800 |
+|        8 |         101 | completed     |          550 |
+|        9 |         103 | not completed |          200 |
+|       10 |         104 | completed     |          750 |
++----------+-------------+---------------+--------------+
+10 rows in set (0.00 sec)
+
+mysql> delimiter //
+
+mysql> create function order_sum(cust int)
+returns int
+not deterministic
+reads sql data
+begin
+    declare total int;
+
+    select sum(total_amount) into total
+    from orders
+    where customer_id = cust
+    and order_status = 'completed';
+
+    if total is null then
+        set total = 0;
+    end if;
+
+    return total;
+end //
+
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> delimiter ;
+mysql> select gettotalordervalue(101);
+ERROR 1305 (42000): FUNCTION assign07_02.gettotalordervalue does not exist
+mysql> select order_sum(101);
++----------------+
+| order_sum(101) |
++----------------+
+|           1050 |
++----------------+
+1 row in set (0.01 sec)
+
+mysql> select order_sum(999);
++----------------+
+| order_sum(999) |
++----------------+
+|              0 |
++----------------+
+1 row in set (0.00 sec)
+
+mysql> ^C
+mysql>

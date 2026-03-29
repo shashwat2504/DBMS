@@ -1,0 +1,112 @@
+
+mysql> CREATE DATABASE assign7;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> use assign7
+Database changed
+mysql> CREATE TABLE accounts(
+    ->     account_id INT PRIMARY KEY,
+    ->     name VARCHAR(20),
+    ->     balance INT
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> DESC accounts;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| account_id | int         | NO   | PRI | NULL    |       |
+| name       | varchar(20) | YES  |     | NULL    |       |
+| balance    | int         | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.03 sec)
+
+mysql> INSERT INTO accounts VALUES (101, 'Shashwat', 5000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO accounts VALUES (102, 'Rahul', 3000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE money_transfer(
+    ->     IN sender_id INT,
+    ->     IN receiver_id INT,
+    ->     IN amount INT
+    -> )
+    -> money_transfer: BEGIN
+    ->
+    ->     -- Check if accounts exist
+    ->     IF EXISTS (SELECT 1 FROM accounts WHERE account_id = sender_id)
+    ->     AND EXISTS (SELECT 1 FROM accounts WHERE account_id = receiver_id)
+    ->     THEN
+    ->
+    ->         -- Check balance
+    ->         IF (SELECT balance FROM accounts WHERE account_id = sender_id) >= amount
+    ->         THEN
+    ->             START TRANSACTION;
+    ->
+    ->             -- Deduct from sender
+    ->             UPDATE accounts
+    ->             SET balance = balance - amount
+    ->             WHERE account_id = sender_id;
+    ->
+    ->             -- Add to receiver
+    ->             UPDATE accounts
+    ->             SET balance = balance + amount
+    ->             WHERE account_id = receiver_id;
+    ->
+    ->             COMMIT;
+    ->
+    ->             SELECT 'Transfer Successful';
+    ->
+    ->         ELSE
+    ->             SELECT 'Insufficient balance';
+    ->             ROLLBACK;
+    ->         END IF;
+    ->
+    ->     ELSE
+    ->         SELECT 'Either of the accounts does not exist';
+    ->         LEAVE money_transfer;
+    ->     END IF;
+    ->
+    -> END //
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> DELIMITER ;
+mysql> SELECT * FROM accounts;
++------------+----------+---------+
+| account_id | name     | balance |
++------------+----------+---------+
+|        101 | Shashwat |    5000 |
+|        102 | Rahul    |    3000 |
++------------+----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> CALL money_transfer(101, 102, 1000);
++---------------------+
+| Transfer Successful |
++---------------------+
+| Transfer Successful |
++---------------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM accounts;
++------------+----------+---------+
+| account_id | name     | balance |
++------------+----------+---------+
+|        101 | Shashwat |    4000 |
+|        102 | Rahul    |    4000 |
++------------+----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> CALL money_transfer(101, 102, 10000);
++----------------------+
+| Insufficient balance |
++----------------------+
+| Insufficient balance |
++----------------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
