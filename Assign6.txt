@@ -1,0 +1,182 @@
+import pymysql
+# python -m pip install pymysql
+
+db = pymysql.connect(user="root", host="localhost", password="#Gamerforlife123")
+cursor = db.cursor()
+
+# DDL Commands
+cursor.execute("drop database if exists shashwat_banking")
+cursor.execute("create database shashwat_banking")
+print("shashwat_banking db created")
+
+cursor.execute("use shashwat_banking")
+
+cursor.execute("""
+create table customer (
+    customer_id int primary key,
+    name varchar(50),
+    dob date,
+    phone varchar(15),
+    email varchar(50),
+    address varchar(100)
+)
+""")
+
+cursor.execute("""
+create table branch (
+    branch_id int primary key,
+    branch_name varchar(50),
+    city varchar(50)
+)
+""")
+
+cursor.execute("""
+create table account (
+    account_no int primary key,
+    customer_id int,
+    account_type varchar(20),
+    balance decimal(10,2),
+    open_date date,
+    foreign key (customer_id) references customer(customer_id)
+)
+""")
+
+cursor.execute("""
+create table transactions (
+    transaction_id int primary key,
+    account_no int,
+    type varchar(10),
+    amount decimal(10,2),
+    txn_date timestamp,
+    foreign key (account_no) references account(account_no)
+)
+""")
+
+cursor.execute("""
+create table employee (
+    employee_id int primary key,
+    name varchar(50),
+    position varchar(30),
+    salary decimal(10,2),
+    branch_id int,
+    foreign key (branch_id) references branch(branch_id)
+)
+""")
+
+# ---------------- DML Commands ---------------- #
+
+# Insert into customer
+sql = "insert into customer values (%s,%s,%s,%s,%s,%s)"
+val = [
+    (1,"arjun","1998-02-15","9123456780","arjun@mail.com","pune"),
+    (2,"meera","2000-06-20","9234567891","meera@mail.com","mumbai"),
+    (3,"kabir","1997-09-10","9345678912","kabir@mail.com","bangalore"),
+    (4,"isha","2001-12-05","9456789123","isha@mail.com","hyderabad"),
+    (5,"dev","1999-03-25","9567891234","dev@mail.com","chennai")
+]
+cursor.executemany(sql, val)
+
+# Insert into branch
+sql = "insert into branch values (%s,%s,%s)"
+val = [
+    (1,"central_branch","pune"),
+    (2,"west_branch","mumbai"),
+    (3,"south_branch","bangalore"),
+    (4,"east_branch","hyderabad"),
+    (5,"north_branch","delhi")
+]
+cursor.executemany(sql, val)
+
+# Insert into account
+sql = "insert into account values (%s,%s,%s,%s,%s)"
+val = [
+    (201,1,"savings",12000.00,"2023-01-15"),
+    (202,2,"current",25000.00,"2023-02-20"),
+    (203,3,"savings",18000.00,"2023-03-10"),
+    (204,4,"current",9000.00,"2023-04-05"),
+    (205,5,"savings",30000.00,"2023-05-12")
+]
+cursor.executemany(sql, val)
+
+# Insert into transactions
+sql = "insert into transactions values (%s,%s,%s,%s,%s)"
+val = [
+    (1,201,"deposit",2000.00,"2024-02-01 10:30:00"),
+    (2,202,"withdraw",1500.00,"2024-02-02 11:45:00"),
+    (3,203,"deposit",3000.00,"2024-02-03 12:00:00"),
+    (4,204,"withdraw",2000.00,"2024-02-04 01:15:00"),
+    (5,205,"deposit",5000.00,"2024-02-05 02:20:00")
+]
+cursor.executemany(sql, val)
+
+# Insert into employee
+sql = "insert into employee values (%s,%s,%s,%s,%s)"
+val = [
+    (1,"ramesh","manager",60000.00,1),
+    (2,"suresh","clerk",32000.00,2),
+    (3,"ananya","cashier",28000.00,3),
+    (4,"vivek","manager",65000.00,4),
+    (5,"neel","clerk",30000.00,5)
+]
+cursor.executemany(sql, val)
+
+# ---------------- ALTER (DDL) ---------------- #
+cursor.execute("alter table customer add column gender varchar(10)")
+
+# ---UPDATE
+cursor.execute("update account set balance = 15000 where account_no = 201")
+
+# --DELETE
+cursor.execute("delete from transactions where transaction_id = 2")
+
+# --SELECT
+print("\nCustomer Table:")
+cursor.execute("select * from customer")
+for row in cursor.fetchall():
+    print(row)
+
+(1, 'arjun', '1998-02-15', '9123456780', 'arjun@mail.com', 'pune', None)
+(2, 'meera', '2000-06-20', '9234567891', 'meera@mail.com', 'mumbai', None)
+(3, 'kabir', '1997-09-10', '9345678912', 'kabir@mail.com', 'bangalore', None)
+(4, 'isha', '2001-12-05', '9456789123', 'isha@mail.com', 'hyderabad', None)
+(5, 'dev', '1999-03-25', '9567891234', 'dev@mail.com', 'chennai', None)
+
+
+print("\nAccount Table:")
+cursor.execute("select * from account")
+for row in cursor.fetchall():
+    print(row)
+
+
+(201, 1, 'savings', 15000.00, '2023-01-15')
+(202, 2, 'current', 25000.00, '2023-02-20')
+(203, 3, 'savings', 18000.00, '2023-03-10')
+(204, 4, 'current', 9000.00, '2023-04-05')
+(205, 5, 'savings', 30000.00, '2023-05-12')
+
+
+print("\nTransactions Table:")
+cursor.execute("select * from transactions")
+for row in cursor.fetchall():
+    print(row)
+
+
+(1, 201, 'deposit', 2000.00, '2024-02-01 10:30:00')
+(3, 203, 'deposit', 3000.00, '2024-02-03 12:00:00')
+(4, 204, 'withdraw', 2000.00, '2024-02-04 01:15:00')
+(5, 205, 'deposit', 5000.00, '2024-02-05 02:20:00')
+
+
+print("\nEmployee Table:")
+cursor.execute("select * from employee")
+for row in cursor.fetchall():
+    print(row)
+
+(1, 'ramesh', 'manager', 60000.00, 1)
+(2, 'suresh', 'clerk', 32000.00, 2)
+(3, 'ananya', 'cashier', 28000.00, 3)
+(4, 'vivek', 'manager', 65000.00, 4)
+(5, 'neel', 'clerk', 30000.00, 5)
+
+db.commit()
+db.close()
