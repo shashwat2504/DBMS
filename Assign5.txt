@@ -136,7 +136,7 @@ ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that 
 mysql>
 mysql>
 mysql>
-mysql>
+mysql> -- show members who joined in last 1 year with details
 mysql> create view report_last_year as
     -> select
     -> concat(upper(first_name),' ',last_name) as full_name,
@@ -165,9 +165,10 @@ Empty set (0.01 sec)
 mysql> select * from genre_popularity;
 Empty set (0.02 sec)
 
-mysql> --2nd question over
+mysql> --2nd question over -- show genre wise borrowing stastics 
     -> ;
 ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--2nd question over' at line 1
+mysql>find exmployees who handled borrowings of members who borrowed more than average
 mysql> create view top_employees as
     -> select distinct
     -> concat(e.first_name,' ',e.last_name) as full_name,
@@ -215,7 +216,7 @@ sdsasdsd' at line 20
 mysql> select * from top_employees;
 Empty set (0.02 sec)
 
-mysql> --4th question
+mysql> --4th question -- combine members with unreturned booksand experienced employees
     -> ;
 ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--4th question' at line 1
 mysql>
@@ -245,7 +246,7 @@ mysql> select first_name, last_name
 
 mysql>
 mysql>
-mysql> --5th question;
+mysql> --5th question   counts books per members sorts highest first and shows top 15;
 ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--5th question' at line 1
 mysql> create view v_top_borrowers as
     -> select
@@ -273,7 +274,7 @@ mysql> select * from v_top_borrowers;
 
 mysql>
 mysql>
-mysql> -6th question
+mysql> -6th question showing how transactions work with error handling t
     -> ;
 ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-6th question' at line 1
 mysql>
