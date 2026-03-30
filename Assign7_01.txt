@@ -1,17 +1,17 @@
 
-mysql> CREATE DATABASE assign7;
+mysql> Create database assign7;
 Query OK, 1 row affected (0.03 sec)
 
 mysql> use assign7
 Database changed
-mysql> CREATE TABLE accounts(
+mysql> create table accounts(
     ->     account_id INT PRIMARY KEY,
     ->     name VARCHAR(20),
     ->     balance INT
     -> );
 Query OK, 0 rows affected (0.05 sec)
 
-mysql> DESC accounts;
+mysql> desc accounts;
 +------------+-------------+------+-----+---------+-------+
 | Field      | Type        | Null | Key | Default | Extra |
 +------------+-------------+------+-----+---------+-------+
@@ -21,53 +21,53 @@ mysql> DESC accounts;
 +------------+-------------+------+-----+---------+-------+
 3 rows in set (0.03 sec)
 
-mysql> INSERT INTO accounts VALUES (101, 'Shashwat', 5000);
+mysql> Insert into accounts values (101, 'Shashwat', 5000);
 Query OK, 1 row affected (0.01 sec)
 
-mysql> INSERT INTO accounts VALUES (102, 'Rahul', 3000);
+mysql> Insert into accounts values (102, 'Rahul', 3000);
 Query OK, 1 row affected (0.01 sec)
 
 mysql> DELIMITER //
-mysql> CREATE PROCEDURE money_transfer(
+mysql> create procedure money_transfer(
     ->     IN sender_id INT,
     ->     IN receiver_id INT,
     ->     IN amount INT
     -> )
     -> money_transfer: BEGIN
     ->
-    ->     -- Check if accounts exist
-    ->     IF EXISTS (SELECT 1 FROM accounts WHERE account_id = sender_id)
-    ->     AND EXISTS (SELECT 1 FROM accounts WHERE account_id = receiver_id)
-    ->     THEN
+    ->     
+    ->     if exists (SELECT 1 FROM accounts WHERE account_id = sender_id)
+    ->     And exists (SELECT 1 FROM accounts WHERE account_id = receiver_id)
+    ->     then
     ->
-    ->         -- Check balance
+    ->        
     ->         IF (SELECT balance FROM accounts WHERE account_id = sender_id) >= amount
     ->         THEN
     ->             START TRANSACTION;
     ->
-    ->             -- Deduct from sender
+    ->             
     ->             UPDATE accounts
     ->             SET balance = balance - amount
     ->             WHERE account_id = sender_id;
     ->
-    ->             -- Add to receiver
-    ->             UPDATE accounts
+    ->           
+    ->             update accounts
     ->             SET balance = balance + amount
     ->             WHERE account_id = receiver_id;
     ->
-    ->             COMMIT;
+    ->             commit;
     ->
-    ->             SELECT 'Transfer Successful';
+    ->             select 'Transfer Successful';
     ->
     ->         ELSE
-    ->             SELECT 'Insufficient balance';
-    ->             ROLLBACK;
+    ->             select 'Insufficient balance';
+    ->             rollback;
     ->         END IF;
     ->
     ->     ELSE
-    ->         SELECT 'Either of the accounts does not exist';
-    ->         LEAVE money_transfer;
-    ->     END IF;
+    ->         select 'Either of the accounts does not exist';
+    ->         leave money_transfer;
+    ->     End if;
     ->
     -> END //
 Query OK, 0 rows affected (0.04 sec)
