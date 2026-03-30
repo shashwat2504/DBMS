@@ -1,7 +1,7 @@
 import pymysql
 # python -m pip install pymysql
 
-db = pymysql.connect(user="root", host="localhost", password="#Gamerforlife123")
+db = pymysql.connect(user="root", host="localhost", password="#shashwat")
 cursor = db.cursor()
 
 # DDL Commands
