@@ -91,9 +91,9 @@ mysql> insert into assigned_to values
 Query OK, 5 rows affected (0.02 sec)
 Records: 5  Duplicates: 0  Warnings: 0
 
-mysql> SELECT e.emp_name, p.proj_name
-    -> FROM Employee e
-    -> JOIN Assigned_To a ON e.emp_id = a.emp_id
+mysql> select e.emp_name, p.proj_name
+    -> from Employee e
+    -> join Assigned_To a ON e.emp_id = a.emp_id
     -> JOIN Project p ON a.project_id = p.project_id;
 +----------------+--------------------+
 | emp_name       | proj_name          |
@@ -106,9 +106,9 @@ mysql> SELECT e.emp_name, p.proj_name
 +----------------+--------------------+
 5 rows in set (0.00 sec)
 
-mysql> SELECT COUNT(*) AS total_employees
-    -> FROM Assigned_To
-    -> WHERE project_id = 'C353';
+mysql> select COUNT(*) AS total_employees
+    -> from Assigned_To
+    -> where project_id = 'C353';
 +-----------------+
 | total_employees |
 +-----------------+
@@ -116,10 +116,10 @@ mysql> SELECT COUNT(*) AS total_employees
 +-----------------+
 1 row in set, 1 warning (0.01 sec)
 
-mysql> SELECT e.emp_name, p.proj_name
-    -> FROM Employee e
-    -> LEFT JOIN Assigned_To a ON e.emp_id = a.emp_id
-    -> LEFT JOIN Project p ON a.project_id = p.project_id;
+mysql> select e.emp_name, p.proj_name
+    -> from Employee e
+    -> left JOIN Assigned_To a ON e.emp_id = a.emp_id
+    -> left JOIN Project p ON a.project_id = p.project_id;
 +----------------+--------------------+
 | emp_name       | proj_name          |
 +----------------+--------------------+
@@ -131,9 +131,9 @@ mysql> SELECT e.emp_name, p.proj_name
 +----------------+--------------------+
 5 rows in set (0.01 sec)
 
-mysql> SELECT p.proj_name, e.emp_name
-    -> FROM Project p
-    -> LEFT JOIN Assigned_To a ON p.project_id = a.project_id
+mysql> select p.proj_name, e.emp_name
+    -> from Project p
+    -> left JOIN Assigned_To a ON p.project_id = a.project_id
     -> LEFT JOIN Employee e ON a.emp_id = e.emp_id;
 +--------------------+----------------+
 | proj_name          | emp_name       |
