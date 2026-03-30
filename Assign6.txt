@@ -63,7 +63,7 @@ create table employee (
 )
 """)
 
-# ---------------- DML Commands ---------------- #
+# --DML Commands  #
 
 # Insert into customer
 sql = "insert into customer values (%s,%s,%s,%s,%s,%s)"
@@ -120,7 +120,7 @@ val = [
 ]
 cursor.executemany(sql, val)
 
-# ---------------- ALTER (DDL) ---------------- #
+# --ALTER (DDL)  #
 cursor.execute("alter table customer add column gender varchar(10)")
 
 # ---UPDATE
