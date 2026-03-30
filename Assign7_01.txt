@@ -41,19 +41,19 @@ mysql> create procedure money_transfer(
     ->     then
     ->
     ->        
-    ->         IF (SELECT balance FROM accounts WHERE account_id = sender_id) >= amount
+    ->         IF (select balance FROM accounts WHERE account_id = sender_id) >= amount
     ->         THEN
     ->             START TRANSACTION;
     ->
     ->             
-    ->             UPDATE accounts
+    ->             update accounts
     ->             SET balance = balance - amount
     ->             WHERE account_id = sender_id;
     ->
     ->           
     ->             update accounts
     ->             SET balance = balance + amount
-    ->             WHERE account_id = receiver_id;
+    ->             where account_id = receiver_id;
     ->
     ->             commit;
     ->
@@ -92,7 +92,7 @@ mysql> CALL money_transfer(101, 102, 1000);
 
 Query OK, 0 rows affected (0.02 sec)
 
-mysql> SELECT * FROM accounts;
+mysql> select * from accounts;
 +------------+----------+---------+
 | account_id | name     | balance |
 +------------+----------+---------+
