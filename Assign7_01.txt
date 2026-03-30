@@ -29,9 +29,9 @@ Query OK, 1 row affected (0.01 sec)
 
 mysql> DELIMITER //
 mysql> create procedure money_transfer(
-    ->     IN sender_id INT,
-    ->     IN receiver_id INT,
-    ->     IN amount INT
+    ->     IN sender_id int,
+    ->     IN receiver_id int,
+    ->     IN amount int
     -> )
     -> money_transfer: BEGIN
     ->
@@ -43,7 +43,7 @@ mysql> create procedure money_transfer(
     ->        
     ->         IF (select balance FROM accounts WHERE account_id = sender_id) >= amount
     ->         THEN
-    ->             START TRANSACTION;
+    ->             start transaction;
     ->
     ->             
     ->             update accounts
