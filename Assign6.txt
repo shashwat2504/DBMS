@@ -11,7 +11,7 @@ print("shashwat_banking db created")
 
 cursor.execute("use shashwat_banking")
 
-cursor.execute("""
+cursor.execute("
 create table customer (
     customer_id int primary key,
     name varchar(50),
@@ -20,17 +20,17 @@ create table customer (
     email varchar(50),
     address varchar(100)
 )
-""")
+")
 
-cursor.execute("""
+cursor.execute("
 create table branch (
     branch_id int primary key,
     branch_name varchar(50),
     city varchar(50)
 )
-""")
+")
 
-cursor.execute("""
+cursor.execute("
 create table account (
     account_no int primary key,
     customer_id int,
@@ -39,9 +39,9 @@ create table account (
     open_date date,
     foreign key (customer_id) references customer(customer_id)
 )
-""")
+")
 
-cursor.execute("""
+cursor.execute("
 create table transactions (
     transaction_id int primary key,
     account_no int,
@@ -50,9 +50,9 @@ create table transactions (
     txn_date timestamp,
     foreign key (account_no) references account(account_no)
 )
-""")
+")
 
-cursor.execute("""
+cursor.execute("
 create table employee (
     employee_id int primary key,
     name varchar(50),
@@ -61,7 +61,7 @@ create table employee (
     branch_id int,
     foreign key (branch_id) references branch(branch_id)
 )
-""")
+")
 
 # --DML Commands  #
 
