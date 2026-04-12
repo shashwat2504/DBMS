@@ -1,0 +1,91 @@
+
+mysql> create database assign9_2;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use assign9_2;
+Database changed
+mysql> create table sales_tax_rate(state varchar(2), tax_rate decimal(5,2));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table customer(c_name varchar(20), product_purchased varchar(20), price_of_product int, city varchar(20), state varchar(2));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table tax_final(c_name varchar(20), city varchar(20), state varchar(2), tax_amount decimal(10,2));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into sales_tax_rate values ('CA',7.5),('NY',8.5),('TX',6.5);
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into customer values ('rahul','laptop',50000,'LA','CA'),('sneha','mobile',20000,'NYC','NY'),('amit','tablet',30000,'Dallas','TX');
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql>
+mysql>
+mysql>
+mysql>
+mysql>
+mysql>
+mysql>
+mysql> delimiter //
+mysql> create procedure tax()
+    -> begin
+    -> declare done int default 0;
+    -> declare a_name varchar(20);
+    -> declare a_price int;
+    -> declare a_city varchar(20);
+    -> declare a_state varchar(2);
+    -> declare a_rate decimal(5,2);
+    -> declare tax decimal(10,2);
+    -> declare taxcursor cursor for select c_name,price_of_product,city,state from customer;
+    -> declare continue handler for not found set done=1;
+    -> open taxcursor;
+    -> repeat
+    -> fetch taxcursor into a_name,a_price,a_city,a_state;
+    -> if not done then
+    -> select tax_rate into a_rate from sales_tax_rate where state=a_state;
+    -> set tax=a_price*a_rate/100;
+    -> insert into tax_final values(a_name,a_city,a_state,tax);
+    -> end if;
+    -> until done end repeat;
+    -> close taxcursor;
+    -> end//
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> delimiter ;
+mysql> call tax();
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from tax_final;
++--------+--------+-------+------------+
+| c_name | city   | state | tax_amount |
++--------+--------+-------+------------+
+| rahul  | LA     | CA    |    3750.00 |
+| sneha  | NYC    | NY    |    1700.00 |
+| amit   | Dallas | TX    |    1950.00 |
++--------+--------+-------+------------+
+3 rows in set (0.01 sec)
+
+mysql> select * from customer;
++--------+-------------------+------------------+--------+-------+
+| c_name | product_purchased | price_of_product | city   | state |
++--------+-------------------+------------------+--------+-------+
+| rahul  | laptop            |            50000 | LA     | CA    |
+| sneha  | mobile            |            20000 | NYC    | NY    |
+| amit   | tablet            |            30000 | Dallas | TX    |
++--------+-------------------+------------------+--------+-------+
+3 rows in set (0.01 sec)
+
+mysql> select * from sales_tax_rate;
++-------+----------+
+| state | tax_rate |
++-------+----------+
+| CA    |     7.50 |
+| NY    |     8.50 |
+| TX    |     6.50 |
++-------+----------+
+3 rows in set (0.00 sec)
+
+mysql>
