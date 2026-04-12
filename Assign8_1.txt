@@ -1,0 +1,103 @@
+mysql>
+mysql>
+mysql> create database assign8;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use assgin8;
+ERROR 1049 (42000): Unknown database 'assgin8'
+mysql> create table drive(drive_name varchar(20),directory_name varchar(20),file_name varchar(20));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> create table file(file_name varchar(20),time_of_creation datetime,time_of_last_access datetime,size_of_file int,file_format varchar(10));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table log_table(file_name varchar(20),time_of_creation datetime,time_of_last_access datetime,size_of_file int,file_format varchar(10));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into file values ('a.txt','2024-01-01','2024-02-01',100,'txt'),('b.mp4','2024-01-05','2024-02-10',5000,'mp4');
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into drive values ('C','docs','a.txt'),('D','media','b.mp4');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> delimiter //
+mysql> create trigger file_log_trigger
+    -> after insert on drive
+    -> for each row
+    -> begin
+    -> insert into log_table(file_name,time_of_creation,time_of_last_access,size_of_file,file_format)
+    -> select new.file_name,time_of_creation,time_of_last_access,size_of_file,file_format
+    -> from file
+    -> where file_name=new.file_name;
+    -> end//
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> delimiter ;
+mysql> insert into drive values ('E','backup','a.txt');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from log_table;
++-----------+---------------------+---------------------+--------------+-------------+
+| file_name | time_of_creation    | time_of_last_access | size_of_file | file_format |
++-----------+---------------------+---------------------+--------------+-------------+
+| a.txt     | 2024-01-01 00:00:00 | 2024-02-01 00:00:00 |          100 | txt         |
++-----------+---------------------+---------------------+--------------+-------------+
+1 row in set (0.01 sec)
+
+mysql> select * from drive;
++------------+----------------+-----------+
+| drive_name | directory_name | file_name |
++------------+----------------+-----------+
+| C          | docs           | a.txt     |
+| D          | media          | b.mp4     |
+| E          | backup         | a.txt     |
++------------+----------------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from file;
++-----------+---------------------+---------------------+--------------+-------------+
+| file_name | time_of_creation    | time_of_last_access | size_of_file | file_format |
++-----------+---------------------+---------------------+--------------+-------------+
+| a.txt     | 2024-01-01 00:00:00 | 2024-02-01 00:00:00 |          100 | txt         |
+| b.mp4     | 2024-01-05 00:00:00 | 2024-02-10 00:00:00 |         5000 | mp4         |
++-----------+---------------------+---------------------+--------------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> insert into drive values ('X','docs','a.txt');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into drive values ('Y','media','b.mp4');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into drive values ('Z','misc','c.pdf');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into drive values
+    -> ('B','docs','a.txt'),
+    -> ('C','media','b.mp4');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into file values ('a.txt','2025-01-01','2025-02-01',200,'txt');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into drive values ('F','docs','a.txt');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from log_table;
++-----------+---------------------+---------------------+--------------+-------------+
+| file_name | time_of_creation    | time_of_last_access | size_of_file | file_format |
++-----------+---------------------+---------------------+--------------+-------------+
+| a.txt     | 2024-01-01 00:00:00 | 2024-02-01 00:00:00 |          100 | txt         |
+| a.txt     | 2024-01-01 00:00:00 | 2024-02-01 00:00:00 |          100 | txt         |
+| b.mp4     | 2024-01-05 00:00:00 | 2024-02-10 00:00:00 |         5000 | mp4         |
+| a.txt     | 2024-01-01 00:00:00 | 2024-02-01 00:00:00 |          100 | txt         |
+| b.mp4     | 2024-01-05 00:00:00 | 2024-02-10 00:00:00 |         5000 | mp4         |
+| a.txt     | 2024-01-01 00:00:00 | 2024-02-01 00:00:00 |          100 | txt         |
+| a.txt     | 2025-01-01 00:00:00 | 2025-02-01 00:00:00 |          200 | txt         |
++-----------+---------------------+---------------------+--------------+-------------+
+7 rows in set (0.00 sec)
+
+mysql>
