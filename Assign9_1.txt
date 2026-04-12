@@ -1,0 +1,78 @@
+mysql> create table employee( eno int, fname varchar(20), age int, grade varchar (20), salary int);
+    -> //
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> delimiter ;
+mysql> insert into employee values (1,'rahul',30,'asst prof',60000),(2,'sneha',35,'associate prof',120000),(3,'amit',40,'professor',150000),(4,'priya',28,'asst prof',70000),(5,'rohit',45,'associate prof',110000);
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++------+-------+------+----------------+--------+
+| eno  | fname | age  | grade          | salary |
++------+-------+------+----------------+--------+
+|    1 | rahul |   30 | asst prof      |  60000 |
+|    2 | sneha |   35 | associate prof | 120000 |
+|    3 | amit  |   40 | professor      | 150000 |
+|    4 | priya |   28 | asst prof      |  70000 |
+|    5 | rohit |   45 | associate prof | 110000 |
++------+-------+------+----------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> create procedure inc_salary4()
+    -> begin
+    -> declare done int default 0;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+mysql> delimiter //
+mysql> create procedure inc_salary4()
+    -> begin
+    -> declare done int default 0;
+    -> declare p_eno int;
+    -> declare p_grade varchar (20);
+    -> declare empcursor cursor for select eno, grade from employee;
+    -> declare continue handler for not found set done = 1;
+    ->
+    -> open empcursor;
+    ->
+    -> repeat
+    -> fetch empcursor into p_eno, p_grade;
+    ->
+    -> if not done then
+    -> if p_grade= 'asst prof' then
+    -> update employee
+    -> set salary= salary +10000
+    -> where eno= p_eno;
+    ->
+    -> elseif p_grade= 'associate prof' then
+    -> update employee
+    -> set salary= salary + 20000
+    -> where eno= p_eno;
+    ->
+    -> elseif p_grade= 'professor' then
+    -> update employee
+    -> set salary= salary+ 30000
+    -> where eno= p_eno;
+    -> end if;
+    -> end if;
+    ->
+    -> until done end repeat;
+    ->
+    ->
+    -> close empcursor;
+    -> end//
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> call inc_salary4()//
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from employee//
++------+-------+------+----------------+--------+
+| eno  | fname | age  | grade          | salary |
++------+-------+------+----------------+--------+
+|    1 | rahul |   30 | asst prof      |  70000 |
+|    2 | sneha |   35 | associate prof | 140000 |
+|    3 | amit  |   40 | professor      | 180000 |
+|    4 | priya |   28 | asst prof      |  80000 |
+|    5 | rohit |   45 | associate prof | 130000 |
++------+-------+------+----------------+--------+
+5 rows in set (0.01 sec)
