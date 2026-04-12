@@ -1,0 +1,71 @@
+
+mysql> create database assign9;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> use assign9;
+Database changed
+mysql> create table customer(cust_id int, principal_amount int, rate_of_interest int, years int);
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> create table templist(cust_id int, compound_interest float);
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> insert into customer values (1,10000,5,2),(2,20000,7,3),(3,15000,6,4),(4,12000,5,5),(5,18000,8,2);
+Query OK, 5 rows affected (0.03 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> delimiter //
+mysql> delimiter //
+mysql> create procedure ci()
+    -> begin
+    -> declare done int default 0;
+    -> declare a_id int;
+    -> declare a_principal int;
+    -> declare a_rate int;
+    -> declare a_years int;
+    -> declare ci float;
+    -> declare customer_cursor cursor for select cust_id,principal_amount,rate_of_interest,years from customer;
+    -> declare continue handler for not found set done=1;
+    -> open customer_cursor;
+    -> repeat
+    -> fetch customer_cursor into a_id,a_principal,a_rate,a_years;
+    -> if not done then
+    -> set ci=a_principal*power((1+a_rate/100),a_years)-a_principal;
+    -> insert into templist values(a_id,ci);
+    -> end if;
+    -> until done end repeat;
+    -> close customer_cursor;
+    -> end//
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> delimiter ;
+mysql> call ci();
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from templist
+    -> ;
++---------+-------------------+
+| cust_id | compound_interest |
++---------+-------------------+
+|       1 |              1025 |
+|       2 |           4500.86 |
+|       3 |           3937.15 |
+|       4 |           3315.38 |
+|       5 |            2995.2 |
++---------+-------------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from customer values;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'values' at line 1
+mysql> select * from customer;
++---------+------------------+------------------+-------+
+| cust_id | principal_amount | rate_of_interest | years |
++---------+------------------+------------------+-------+
+|       1 |            10000 |                5 |     2 |
+|       2 |            20000 |                7 |     3 |
+|       3 |            15000 |                6 |     4 |
+|       4 |            12000 |                5 |     5 |
+|       5 |            18000 |                8 |     2 |
++---------+------------------+------------------+-------+
+5 rows in set (0.01 sec)
