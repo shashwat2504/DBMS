@@ -27,8 +27,8 @@ mysql> delimiter //
 mysql> create procedure inc_salary4()
     -> begin
     -> declare done int default 0;
-    -> declare p_eno int;
-    -> declare p_grade varchar (20);
+    -> declare sal_eno int;
+    -> declare sal_grade varchar (20);
     -> declare empcursor cursor for select eno, grade from employee;
     -> declare continue handler for not found set done = 1;
     ->
@@ -38,20 +38,20 @@ mysql> create procedure inc_salary4()
     -> fetch empcursor into p_eno, p_grade;
     ->
     -> if not done then
-    -> if p_grade= 'asst prof' then
+    -> if sal_grade= 'asst prof' then
     -> update employee
     -> set salary= salary +10000
-    -> where eno= p_eno;
+    -> where eno= sal_eno;
     ->
-    -> elseif p_grade= 'associate prof' then
+    -> elseif sal_grade= 'associate prof' then
     -> update employee
     -> set salary= salary + 20000
-    -> where eno= p_eno;
+    -> where eno= sal_eno;
     ->
-    -> elseif p_grade= 'professor' then
+    -> elseif sal_grade= 'professor' then
     -> update employee
     -> set salary= salary+ 30000
-    -> where eno= p_eno;
+    -> where eno= sal_eno;
     -> end if;
     -> end if;
     ->
