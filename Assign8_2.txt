@@ -78,10 +78,10 @@ mysql> create trigger insert_writing
     -> after insert on writing
     -> for each row
     -> begin
-    -> declare b_sales int;
-    -> select soldcopies into b_sales from book where isbn=new.isbn limit 1;
+    -> declare author_sales int;
+    -> select soldcopies into author_sales from book where isbn=new.isbn limit 1;
     -> update author
-    -> set soldcopies=soldcopies+b_sales
+    -> set soldcopies=soldcopies+author_sales
     -> where name=new.name;
     -> end//
 Query OK, 0 rows affected (0.02 sec)
