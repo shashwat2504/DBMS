@@ -1,0 +1,79 @@
+! pip install PyMySQL
+
+
+=============================
+import pymysql
+database=pymysql.connect(host='localhost', user='root',password='mysqlroot')
+cursor=database.cursor()
+cursor.execute("create database democonn1")
+print("democonn1 database is created")
+===================================
+
+import pymysql
+database = pymysql.connect(host ='localhost', user='root',password ='mysqlroot',database = 'democonn1')
+Cursor = database.cursor()
+Cursor.execute("create table stud2(prn int,name varchar(25),subject varchar(25))")
+Cursor.close()
+database.close()
+
+
+=====================================
+import pymysql
+database = pymysql.connect(host = 'localhost', user='root',password ='mysqlroot',database = 'democonn1')
+Cursor = database.cursor()
+sql="INSERT INTO STUD1(prn,name,subject)VALUES(%s,%s,%s)"
+val=("101","Shree","DBMS")
+Cursor.execute(sql,val)
+database.commit()
+
+print(Cursor.rowcount,"record inserted.")
+
+Cursor.close()
+database.close()
+
+=================================
+
+import pymysql
+database = pymysql.connect(host = 'localhost', user='root',password ='mysqlroot',database = 'democonn1')
+Cursor = database.cursor()
+sql="INSERT INTO STUD1(prn,name,subject)VALUES(%s,%s,%s)"
+Cursor.execute("select * from stud1")
+results=Cursor.fetchall()
+for row in results:
+    print(row)
+Cursor.close()
+database.close()
+============================================
+
+
+import pymysql
+database = pymysql.connect(host = 'localhost', user='root',password ='mysqlroot',database = 'democonn1')
+Cursor = database.cursor()
+sql="Delete from stud1 where subject='DBMS'"
+Cursor.execute("select * from stud1")
+results=Cursor.fetchall()
+for row in results:
+    print(row)
+Cursor.close()
+database.close()
+
+============================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
